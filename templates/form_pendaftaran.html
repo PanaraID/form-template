@@ -46,20 +46,28 @@
 
         const url = 'https://script.google.com/macros/s/AKfycbyZSXWt4z_FdrQcOfgGE18w3v28R2iTnhyAoAcL9PgcQVnN29C1hMWjLENCavhUpRVm/exec';
 
+        const showError = message => {
+          setIsMessage(true);
+            setType('error');
+            setMessage(message);
+            setIsSubmitting(false);
+        }
+
         fetch(url, { method: 'POST', body: formData })
+          .then(response => response.json())
           .then(response => {
+            if (response['result'] === 'error') {
+              showError(response.error);
+              return;
+            }
+
             setIsMessage(true);
             setType('success');
             setMessage('Data berhasil dikirim');
             setIsSubmitting(false);
-            console.log('Success!', response);
           })
           .catch(error => {
-            setIsMessage(true);
-            setType('error');
-            setMessage('Terjadi kesalahan saat mengirim data');
-            setIsSubmitting(false); // Set isSubmitting false jika terjadi kesalahan
-            console.error('Error!', error.message);
+            showError('Terjadi kesalahan saat mengirim data');
           });
       };
 
