@@ -54,13 +54,13 @@ function doPost(e) {
 
         if (header === 'email' && !isValidEmail(e.parameter['email'])) {
           return ContentService
-            .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Invalid email format.' }))
+            .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Email format tidak valid!' }))
             .setMimeType(ContentService.MimeType.JSON);
         }
 
         if (header === 'phone' && !isValidIndonesianPhone(e.parameter['phone'])) {
           return ContentService
-            .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Invalid phone number format.' }))
+            .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Nomor telpon tidak valid!' }))
             .setMimeType(ContentService.MimeType.JSON);
         }
 
@@ -68,7 +68,7 @@ function doPost(e) {
       }
       if (duplicateFound) {
         return ContentService
-          .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Data already exists.' }))
+          .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Data sudah ada!' }))
           .setMimeType(ContentService.MimeType.JSON);
       }
     }
