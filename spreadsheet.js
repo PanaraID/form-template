@@ -30,15 +30,22 @@ function doPost(e) {
     const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     const nextRow = sheet.getLastRow() + 1;
 
-    //  Bagian yang akan dicek apakah semua dari yang berheader berikut sudah ada?,
-    // mohon pastikan nama header yang akan dicek ini sama dengan data header di spreadsheet.
-    // 
-    //  Jika ada yang sudah ada, maka akan mengembalikan pesan error
-    // jika tidak ada yang sudah ada, maka akan mengembalikan pesan sukses
-    //
-    //  Dan ada fitur pengecekan email dan phone yang valid juga di sini.
-    const columnsToCheck = ['name', 'email', 'phone'];
+    const columnsToCheck = ['name', 'email'];
 
+    // Validate email and phone format
+    if (!isValidEmail(e.parameter['email'])) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Email format tidak valid!' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // if (!isValidIndonesianPhone(e.parameter['phone'])) {
+    //   return ContentService
+    //     .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Nomor telpon tidak valid!' }))
+    //     .setMimeType(ContentService.MimeType.JSON);
+    // }
+
+    // Check for duplicates
     const dataRange = sheet.getDataRange();
     const values = dataRange.getValues();
     const headersIndex = headers.reduce((acc, header, index) => {
@@ -51,20 +58,7 @@ function doPost(e) {
       let duplicateFound = true;
       for (let j = 0; j < columnsToCheck.length; j++) {
         const header = columnsToCheck[j];
-
-        if (header === 'email' && !isValidEmail(e.parameter['email'])) {
-          return ContentService
-            .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Email format tidak valid!' }))
-            .setMimeType(ContentService.MimeType.JSON);
-        }
-
-        if (header === 'phone' && !isValidIndonesianPhone(e.parameter['phone'])) {
-          return ContentService
-            .createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Nomor telpon tidak valid!' }))
-            .setMimeType(ContentService.MimeType.JSON);
-        }
-
-        duplicateFound &= row[headersIndex[header]] !== e.parameter[header];
+        duplicateFound &= row[headersIndex[header]] === e.parameter[header];
       }
       if (duplicateFound) {
         return ContentService
@@ -91,3 +85,4 @@ function doPost(e) {
     lock.releaseLock();
   }
 }
+
