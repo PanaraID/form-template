@@ -1,7 +1,8 @@
 const PAGES = {
   HOME: 'Home',
   ABOUT: 'About',
-  CONTACT: 'Contact'
+  DOCS: 'Docs',
+  DEMO: 'Demo'
 }
 
 export default PAGES
