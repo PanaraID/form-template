@@ -40,7 +40,7 @@
       function handleFileSelect(event) {
         const file = event.target.files[0];
         const maxSize = 3 * 1024 * 1024; // 3 MB in bytes
-        
+
         // Check if file is not undefined and is an image
         if (file && file.type.startsWith('image/')) {
           // Check file size
@@ -55,20 +55,43 @@
           event.target.value = null; // Reset file input to clear the selected file
         }
       }
-      
+
       // Function to handle form submission
       function handleSubmit(event) {
         event.preventDefault();
-        
-        // Perform further validation if needed
-        
-        // Log the form data
-        console.log('Form Data:', formData);
-        
-        // Reset form after submission (optional)
-        // setFormData({ nama: '', email: '', telepon: '', gambar: null });
+
+        console.log(formData.gambar)
+
+        // Prepare form data as FormData object
+        let formDataToSend = new FormData();
+        formDataToSend.append('name', formData.nama);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('phone', formData.telepon);
+        formDataToSend.append('image', formData.gambar);
+
+        // Make POST request to Google Apps Script
+        const url = 'https://script.google.com/macros/s/AKfycbzbPeS8GIbdU7gap0Vi85AeOK-JcEsZ8AbkobjwKXOddEgnQxH2C1kwOLWgbv3_HbU/exec'
+        fetch(url, {
+          method: 'POST',
+          body: formDataToSend
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.text();
+          })
+          .then(data => {
+            console.log('Form submission successful:', data);
+            // Reset form after successful submission (optional)
+            // setFormData({ nama: '', email: '', telepon: '', gambar: null });
+          })
+          .catch(error => {
+            console.error('Error during form submission:', error);
+          });
       }
-      
+
+
       return (
         <div className="container mt-5">
           <h1>Form Pendaftaran</h1>
