@@ -1,11 +1,26 @@
+import { useState } from 'react'
+
 import './App.css'
-import { Fragment } from 'react'
+
+import AppContext from './context/AppContext'
+import PAGES from './finals/PAGES'
+
+import Home from './pages/Home'
+import About from './pages/About'
+import Docs from './pages/Docs'
 
 function App() {
+  const [page, setPage] = useState(PAGES.HOME)
+
+  const context = {
+    page, setPage
+  }
   return (
-    <Fragment>
-      <h1>Hello World</h1>
-    </Fragment>
+    <AppContext.Provider value={context}>
+      {page === PAGES.HOME && <Home />}
+      {page === PAGES.ABOUT && <About />}
+      {page === PAGES.Docs && <Docs />}
+    </AppContext.Provider>
   )
 }
 
