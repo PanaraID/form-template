@@ -29,7 +29,13 @@
 
   <script type="text/babel">
     function App() {
-      
+      const [formData, setFormData] = React.useState({
+        nama: '',
+        email: '',
+        telepon: '',
+        gambar: null
+      });
+
       // Function to handle file selection
       function handleFileSelect(event) {
         const file = event.target.files[0];
@@ -41,6 +47,8 @@
           if (file.size > maxSize) {
             alert('Ukuran file tidak boleh lebih dari 3 MB.');
             event.target.value = null; // Reset file input to clear the selected file
+          } else {
+            setFormData({ ...formData, gambar: file });
           }
         } else {
           alert('Harap pilih file gambar.');
@@ -48,21 +56,37 @@
         }
       }
       
+      // Function to handle form submission
+      function handleSubmit(event) {
+        event.preventDefault();
+        
+        // Perform further validation if needed
+        
+        // Log the form data
+        console.log('Form Data:', formData);
+        
+        // Reset form after submission (optional)
+        // setFormData({ nama: '', email: '', telepon: '', gambar: null });
+      }
+      
       return (
         <div className="container mt-5">
           <h1>Form Pendaftaran</h1>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="nama" className="form-label">Nama Lengkap</label>
-              <input type="text" className="form-control" id="nama" required />
+              <input type="text" className="form-control" id="nama" required
+                value={formData.nama} onChange={(e) => setFormData({ ...formData, nama: e.target.value })} />
             </div>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">Email</label>
-              <input type="email" className="form-control" id="email" required />
+              <input type="email" className="form-control" id="email" required
+                value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
             </div>
             <div className="mb-3">
               <label htmlFor="telepon" className="form-label">Nomor Telepon</label>
-              <input type="tel" className="form-control" id="telepon" required />
+              <input type="tel" className="form-control" id="telepon" required
+                value={formData.telepon} onChange={(e) => setFormData({ ...formData, telepon: e.target.value })} />
             </div>
             <div className="mb-3">
               <label htmlFor="gambar" className="form-label">Upload Gambar (Maksimal 3 MB)</label>
