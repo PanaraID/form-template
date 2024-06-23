@@ -2,7 +2,11 @@ import PropTypes from 'prop-types'
 
 const IFrame = ({src}) => {
   return (
-    <iframe src={`./templates/${src}.html`}></iframe>
+    <iframe 
+      src={`./templates/${src}.html`}
+      width='100%'
+      height='500vh'
+      ></iframe>
   )
 }
 
