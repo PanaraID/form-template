@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 
 const IFrame = ({src}) => {
+  console.log(src)
   return (
     <iframe 
       src={`./templates/${src}.html`}
