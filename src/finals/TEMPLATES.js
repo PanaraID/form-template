@@ -1,4 +1,9 @@
 const TEMPALTES = {
+  COBA: {
+    name: "Coba",
+    description: "hai",
+    path: "coba",
+  },
   FORM_INPUT_GAMBAR: {
     name: "Form Input Gambar",
     description: "hai",
