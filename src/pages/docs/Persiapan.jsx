@@ -25,6 +25,9 @@ const Persiapan = () => {
           </li>
         </ul>
       </section>
+      <section>
+        <h2>## Apa Saja yang Perlu Saya Edit Ketika Ingin Memasangnya?</h2>
+      </section>
     </Fragment>
   );
 };
