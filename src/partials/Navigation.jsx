@@ -11,8 +11,8 @@ const Navigation = () => {
   return (
     <Fragment>
       <Tabs activeKey={page} onSelect={handleTabSelect}>
-        {/* <Tabs.Tab eventKey={PAGES.HOME} title={PAGES.HOME} />
-        <Tabs.Tab eventKey={PAGES.ABOUT} title={PAGES.ABOUT} /> */}
+        <Tabs.Tab eventKey={PAGES.HOME} title={PAGES.HOME} />
+        {/* <Tabs.Tab eventKey={PAGES.ABOUT} title={PAGES.ABOUT} /> */}
         <Tabs.Tab eventKey={PAGES.DOCS} title={PAGES.DOCS} />
         <Tabs.Tab eventKey={PAGES.DEMO} title={PAGES.DEMO} />
       </Tabs>

@@ -1,19 +1,27 @@
 import { useState } from "react";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { Fragment } from "react";
-import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 
 import TEMLATES from "../finals/TEMPLATES";
 import Iframe from "../partials/Iframe";
 
 const Demo = () => {
-  const [page, setPage] = useState(() =>
-    JSON.parse(localStorage.getItem("page_demo"))
-  );
+  const [page, setPage] = useState();
 
-  useEffect(() => {
-    localStorage.setItem("page_demo", JSON.stringify(page));
-  }, [page]);
+  // useEffect(() => {
+  //   localStorage.setItem("page_demo", JSON.stringify(page));
+  // }, [page]);
+
+  const copyMe = (code, alert_text) => {
+    fetch(code)
+      .then((e) => e.text())
+      .then((e) => {
+        console.log(e);
+        navigator.clipboard.writeText(e);
+        alert(alert_text);
+      });
+  };
 
   return (
     <Fragment>
@@ -31,7 +39,7 @@ const Demo = () => {
                   key={id}
                   as="li"
                   onClick={() => setPage(TEMLATES[key])}
-                  active={page["name"] === TEMLATES[key]["name"]}
+                  active={page && page["name"] === TEMLATES[key]["name"]}
                 >
                   {TEMLATES[key]["name"]}
                 </ListGroup.Item>
@@ -56,13 +64,43 @@ const Demo = () => {
               <ListGroupItem>
                 <Card>
                   <Card.Header>Script Spreadsheet</Card.Header>
-                  <Card.Body>{page ? page["description"] : "-"}</Card.Body>
+                  <Card.Body>
+                    {page ? (
+                      <Button
+                        onClick={() =>
+                          copyMe(
+                            `./scripts/${page["script_spreadsheet"]}.gs`,
+                            "Script Spreadsheet Berhasil Disalin!"
+                          )
+                        }
+                      >
+                        Salin Saya
+                      </Button>
+                    ) : (
+                      "-"
+                    )}
+                  </Card.Body>
                 </Card>
               </ListGroupItem>
               <ListGroupItem>
                 <Card>
                   <Card.Header>Script HTML</Card.Header>
-                  <Card.Body>{page ? page["description"] : "-"}</Card.Body>
+                  <Card.Body>
+                    {page ? (
+                      <Button
+                        onClick={() =>
+                          copyMe(
+                            `./templates/${page["path"]}.html`,
+                            "Script HTML Berhasil Disalin!"
+                          )
+                        }
+                      >
+                        Salin Saya
+                      </Button>
+                    ) : (
+                      "-"
+                    )}
+                  </Card.Body>
                 </Card>
               </ListGroupItem>
             </ListGroup>

@@ -15,9 +15,14 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Docs from "./pages/Docs";
 import Demo from "./pages/Demo";
+import { useEffect } from "react";
 
 function App() {
-  const [page, setPage] = useState(PAGES.DEMO);
+  const [page, setPage] = useState(() => localStorage.getItem('page') || PAGES.HOME);
+
+  useEffect(() => {
+    localStorage.setItem('page', page);
+  }, [page])
 
   const context = {
     page,

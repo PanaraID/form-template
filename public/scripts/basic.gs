@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 const SHEET_NAME = "Sheet1"; // Nama tab Spreadsheet yang digunakan
+const checkHeader = ['name', 'email']; // Header yang digunakan untuk mengecek duplikat
 
 /**
  * Fungsi utama untuk menangani POST request.
@@ -15,6 +16,8 @@ function doPost(e) {
     const headers = getSheetHeaders(sheet); // Mendapatkan header (nama kolom)
 
     validateRequiredParameters(headers, e.parameter); // Memvalidasi parameter yang diperlukan
+
+    checkForDuplicates(sheet, e.parameter); // Memeriksa duplikat berdasarkan parameter
 
     const newRow = createNewRow(headers, e.parameter); // Membuat objek newRow untuk data baru
 
@@ -61,6 +64,39 @@ function validateRequiredParameters(headers, parameters) {
   const missingHeaders = headersToValidate.filter(header => !parameters[header]);
   if (missingHeaders.length > 0) {
     throw new Error("Parameter yang diperlukan tidak ada: " + missingHeaders.join(", "));
+  }
+}
+
+/**
+ * Fungsi untuk memeriksa apakah ada data yang dobel berdasarkan header yang ditentukan.
+ * @param {object} sheet Objek lembar (sheet) dari Spreadsheet.
+ * @param {object} parameters Objek yang berisi parameter-parameter dari POST request.
+ * @throws {Error} Jika data yang dobel ditemukan berdasarkan header yang ditentukan.
+ */
+function checkForDuplicates(sheet, parameters) {
+  const dataRange = sheet.getDataRange();
+  const values = dataRange.getValues();
+
+  const headerRow = values[0];
+  const checkIndexes = checkHeader.map(header => headerRow.indexOf(header));
+
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+    let isDuplicate = true;
+
+    for (let j = 0; j < checkIndexes.length; j++) {
+      const index = checkIndexes[j];
+      const value = parameters[checkHeader[j]];
+
+      if (row[index] !== value) {
+        isDuplicate = false;
+        break;
+      }
+    }
+
+    if (isDuplicate) {
+      throw new Error("Data duplikat ditemukan berdasarkan header yang ditentukan.");
+    }
   }
 }
 

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { Fragment } from "react";
-import { Alert, ListGroup } from "react-bootstrap";
+import { Alert, Card, ListGroup } from "react-bootstrap";
+import Pendahuluan from "./docs/Pendahuluan";
+import Persiapan from "./docs/Persiapan";
 
 const PAGES = {
   PENDAHULUAN: "Pendahuluan",
@@ -9,14 +11,14 @@ const PAGES = {
   SCRIPT_FORM: "Mengenai Script pada Form",
   SCRIPT_SPREADSHEET: "Mengenai Script pada Spreadsheet",
   HAL_PENTING_SAAT_KUSTOM_FORM: "Hal yang Penting Saat Kustom Form",
-  KUSTOM_FORM: "Kustom Form"
+  KUSTOM_FORM: "Kustom Form",
 };
 
 const Docs = () => {
-  const [page, setPage] = useState(() => localStorage.getItem('page'));
+  const [page, setPage] = useState();
 
   useEffect(() => {
-    localStorage.setItem('page', page);
+    localStorage.setItem("page", page);
   }, [page]);
 
   return (
@@ -41,7 +43,10 @@ const Docs = () => {
           );
         })}
       </ListGroup>
-      {page === PAGES.PERSIAPAN && <h1>Hello World</h1>}
+      <Card className="m-2 p-2">
+        {page === PAGES.PENDAHULUAN && <Pendahuluan />}
+        {page === PAGES.PERSIAPAN && <Persiapan />}
+      </Card>
     </Fragment>
   );
 };
