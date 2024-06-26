@@ -2,15 +2,24 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { Fragment } from "react";
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import parse from "html-react-parser";
 
 import TEMLATES from "../finals/TEMPLATES";
 import Iframe from "../partials/Iframe";
 
 const Demo = () => {
-  const [page, setPage] = useState(() => JSON.parse(localStorage.getItem("page_demo")));
+  const [page, setPage] = useState(() =>
+    JSON.parse(localStorage.getItem("page_demo"))
+  );
+  const [description, setDescription] = useState(undefined);
 
   useEffect(() => {
     localStorage.setItem("page_demo", JSON.stringify(page));
+    if (page) {
+      fetch(`./description/${page["description"]}.html`)
+        .then((response) => response.text())
+        .then((response) => setDescription(response));
+    }
   }, [page]);
 
   const copyMe = (code, alert_text) => {
@@ -58,7 +67,7 @@ const Demo = () => {
                   <ListGroupItem>
                     <Card>
                       <Card.Header>Deskripsi</Card.Header>
-                      <Card.Body>{page ? page["description"] : "-"}</Card.Body>
+                      <Card.Body>{description && parse(description)}</Card.Body>
                     </Card>
                   </ListGroupItem>
                   <ListGroupItem>
