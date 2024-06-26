@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { Alert, Card, ListGroup } from "react-bootstrap";
 import Pendahuluan from "./docs/Pendahuluan";
 import Persiapan from "./docs/Persiapan";
+import KustomForm from "./docs/KustomForm";
 
 const PAGES = {
   PENDAHULUAN: "Pendahuluan",
@@ -46,6 +47,7 @@ const Docs = () => {
       <Card className="m-2 p-2">
         {page === PAGES.PENDAHULUAN && <Pendahuluan />}
         {page === PAGES.PERSIAPAN && <Persiapan />}
+        {page === PAGES.KUSTOM_FORM && <KustomForm />}
       </Card>
     </Fragment>
   );
