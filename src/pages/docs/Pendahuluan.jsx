@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { ListGroup } from "react-bootstrap";
 
 const Pendahuluan = () => {
   return (
@@ -8,7 +7,10 @@ const Pendahuluan = () => {
         <h2>## Apa Saja yang Dapat Dilakukan?</h2>
         <ul>
           <li>Menyimpan data interaksi dari website langsung ke spreadsheet</li>
-          <li>Bahkan dapat menyimpan file gambar yang dapat disimpan di Google Drive</li>
+          <li>
+            Bahkan dapat menyimpan file gambar yang dapat disimpan di Google
+            Drive
+          </li>
         </ul>
       </section>
       <section>
@@ -25,6 +27,7 @@ const Pendahuluan = () => {
             </ul>
           </li>
           <li>Membuat fitur kritk dan saran</li>
+          <li>Membuat URL Shortener</li>
         </ul>
       </section>
     </Fragment>
