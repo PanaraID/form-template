@@ -128,6 +128,7 @@
           console.log(formData["image"])
           console.log(e.target.result)
           navigator.clipboard.writeText(e.target.result);
+          alert("Mohon tunggu, diharap tidak menekan lagi tombol hingga muncul notifikasi")
           fetch(spreadsheetURL, { method: "POST", body: formData })
             .then(response => response.json())
             .then(response => {

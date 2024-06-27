@@ -27,6 +27,10 @@ const Persiapan = () => {
       </section>
       <section>
         <h2>## Apa Saja yang Perlu Saya Edit Ketika Ingin Memasangnya?</h2>
+        <ul>
+          <li>Silahkan pergei ke Demo lalu salin <b>Script HTML</b></li>
+          <li>Lalu rubah variabel bernama <b>spreadsheetURL</b> sesuai url</li>
+        </ul>
       </section>
     </Fragment>
   );
