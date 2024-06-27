@@ -3,7 +3,6 @@
 
 const SHEET_NAME = "Sheet1"; // Nama tab Spreadsheet yang digunakan
 const checkHeader = ["name", "email"]; // Header yang digunakan untuk mengecek duplikat
-const IMAGE_FOLDER_ID = "your_folder_id"; // ID folder di Google Drive tempat gambar akan disimpan
 
 /**
  * Fungsi utama untuk menangani POST request.
@@ -13,20 +12,16 @@ const IMAGE_FOLDER_ID = "your_folder_id"; // ID folder di Google Drive tempat ga
 function doPost(e) {
   try {
     const sheet = getSheetByName(SHEET_NAME); // Mendapatkan lembar (sheet) berdasarkan nama
-
     const headers = getSheetHeaders(sheet); // Mendapatkan header (nama kolom)
 
     validateRequiredParameters(headers, e.parameter); // Memvalidasi parameter yang diperlukan
-
     checkForDuplicates(sheet, e.parameter); // Memeriksa duplikat berdasarkan parameter
-
-    const newRow = createNewRow(headers, e.parameter); // Membuat objek newRow untuk data baru
-
-    if (e.parameters && e.parameters.image) {
-      const imageUrl = uploadImageToDrive(e.parameters.image); // Mengunggah gambar ke Google Drive
-      newRow["image"] = imageUrl; // Menyimpan URL gambar ke dalam newRow
+    // Memeriksa ukuran gambar base64 sebelum disimpan
+    if (e.parameter.image && !checkBase64ImageSize(e.parameter.image)) {
+      throw new Error("Ukuran gambar melebihi batas maksimum (3 MB).");
     }
 
+    const newRow = createNewRow(headers, e.parameter); // Membuat objek newRow untuk data baru
     appendRowToSheet(sheet, newRow); // Menambahkan data baru ke lembar (sheet)
 
     return createSuccessResponse(newRow); // Memberikan respons sukses dengan data yang ditambahkan
@@ -37,23 +32,19 @@ function doPost(e) {
 }
 
 /**
- * Fungsi untuk mengunggah gambar ke Google Drive.
- * @param {string} imageBase64 Data gambar dalam format base64.
- * @returns {string} URL gambar yang diunggah ke Google Drive.
+ * Fungsi untuk memeriksa ukuran gambar base64.
+ * @param {string} base64String String base64 yang mewakili gambar.
+ * @returns {boolean} True jika ukuran kurang dari 3 MB, false jika lebih.
  */
-function uploadImageToDrive(imageBase64) {
-  const contentType = "image/png"; // Ubah sesuai dengan jenis gambar yang diunggah
-  const bytes = Utilities.base64Decode(imageBase64);
-  const blob = Utilities.newBlob(
-    bytes,
-    contentType,
-    Utilities.base64Decode(imageBase64)
-  );
+function checkBase64ImageSize(base64String) {
+  // Menghitung panjang base64 (dalam byte)
+  const padding = (base64String.match(/=/g) || []).length;
+  const imageSizeInBytes = (base64String.length * 3) / 4 - padding;
 
-  const folder = DriveApp.getFolderById(IMAGE_FOLDER_ID);
-  const file = folder.createFile(blob);
+  // Maksimum ukuran 3 MB (3 * 1024 * 1024 bytes)
+  const maxSizeInBytes = 3 * 1024 * 1024;
 
-  return file.getUrl(); // Mengembalikan URL gambar yang baru diunggah
+  return imageSizeInBytes <= maxSizeInBytes;
 }
 
 /**
@@ -109,15 +100,17 @@ function checkForDuplicates(sheet, parameters) {
   const values = dataRange.getValues();
 
   const headerRow = values[0];
-  const checkIndexes = checkHeader.map((header) => headerRow.indexOf(header));
+  const checkIndexes = checkHeader.map(header => headerRow.indexOf(header));
+
+  const valuesToCheck = checkHeader.map(header => parameters[header]);
 
   for (let i = 1; i < values.length; i++) {
     const row = values[i];
     let isDuplicate = true;
 
-    for (let j = 0; j < checkIndexes.length; j++) {
+    for (let j = 0; j < checkHeader.length; j++) {
       const index = checkIndexes[j];
-      const value = parameters[checkHeader[j]];
+      const value = valuesToCheck[j];
 
       if (row[index] !== value) {
         isDuplicate = false;
@@ -126,12 +119,12 @@ function checkForDuplicates(sheet, parameters) {
     }
 
     if (isDuplicate) {
-      throw new Error(
-        "Data duplikat ditemukan berdasarkan header yang ditentukan."
-      );
+      throw new Error("Data duplikat ditemukan berdasarkan header yang ditentukan.");
     }
   }
 }
+
+
 
 /**
  * Fungsi untuk membuat objek newRow berdasarkan header dan parameter yang diterima.
