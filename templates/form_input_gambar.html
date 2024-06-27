@@ -61,6 +61,12 @@
       background-color: #45a049;
     }
 
+    button[disabled=true] {
+      border: 1px solid #999999;
+      background-color: #cccccc;
+      color: #666666;
+    }
+
     input[type="file"] {
       padding: 8px 0;
     }
@@ -93,7 +99,7 @@
         <label for="gambar">Upload Gambar (Maksimal 3 MB)</label>
         <input type="file" id="gambar" accept="image/*" required name="image">
       </div>
-      <button type="submit">Daftar</button>
+      <button type="submit" name="submit">Daftar</button>
     </form>
   </div>
 
@@ -124,16 +130,19 @@
 
         reader.onload = function (e) {
           formData.append("image", e.target.result);
-          console.log(formData)
-          console.log(formData["image"])
-          console.log(e.target.result)
-          navigator.clipboard.writeText(e.target.result);
-          alert("Mohon tunggu, diharap tidak menekan lagi tombol hingga muncul notifikasi")
+
+          const button = form["submit"];
+          button.setAttribute("disabled", true);
+          button.innerHTML = "Mohon tunggu...";
           fetch(spreadsheetURL, { method: "POST", body: formData })
             .then(response => response.json())
             .then(response => {
-              alert(response.message)
+              if (response.result === 'error') alert(response.message)
+              else if (response.result === 'success') alert('BERHASIL')
+
               console.log("Success!", response)
+              button.removeAttribute("disabled");
+              button.innerHTML = "Daftar";
             })
             .catch(error => console.error("Error!", error.message))
         };
